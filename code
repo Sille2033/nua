@@ -1,0 +1,37 @@
+-- Local script placed inside Workspace
+
+local function getPlayerColor(character)
+  -- Helper function to find the primary color of a character's torso
+  local primaryPart = character:WaitForChild("Torso")
+  if primaryPart then
+    local texture = primaryPart.Material.DiffuseMap
+    if texture then
+      return texture.Color
+    end
+  end
+  return Color.fromRGB(128, 128, 128) -- Default gray if color not found
+end
+
+local function highlightPlayer(player)
+  local character = player.Character
+  if character then
+    local highlight = character:FindFirstChild("Highlight")
+    if not highlight then
+      highlight = Instance.new("Highlight")
+      highlight.Parent = character
+    end
+    highlight.OutlineColor = getPlayerColor(character)
+  end
+end
+
+game.Players.CharacterAdded:Connect(function(character)
+  local player = game.Players:GetPlayerFromCharacter(character)
+  if player then
+    highlightPlayer(player)
+  end
+end)
+
+-- Loop through existing players at start
+for _, player in pairs(game.Players:GetPlayers()) do
+  highlightPlayer(player)
+end
